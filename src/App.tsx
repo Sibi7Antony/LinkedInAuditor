@@ -84,7 +84,7 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0D1117] text-[#C9D1D9] relative overflow-hidden">
+    <div className="min-h-screen bg-[#0f0f23] text-[#e2e8f0] relative overflow-hidden">
       <Background />
       
       <div className="relative z-10">
@@ -92,7 +92,7 @@ function App() {
         
         {/* Navigation Tabs */}
         <div className="max-w-6xl mx-auto px-6 mb-8">
-          <div className="flex space-x-1 bg-[#161B22] rounded-lg p-1 border border-[#30363d]">
+          <div className="flex space-x-1 glass rounded-xl p-1">
             {[
               { id: 'input', label: 'Profile Input', icon: '🔍' },
               { id: 'dashboard', label: 'Analysis', icon: '📊', disabled: !analysis },
@@ -103,12 +103,12 @@ function App() {
                 key={tab.id}
                 onClick={() => !tab.disabled && setActiveTab(tab.id as any)}
                 disabled={tab.disabled}
-                className={`flex items-center space-x-2 px-4 py-2 rounded-md font-medium transition-all duration-200 ${
+                className={`flex items-center space-x-2 px-6 py-3 rounded-lg font-medium transition-all duration-300 ${
                   activeTab === tab.id
-                    ? 'bg-[#58A6FF] text-[#0D1117] shadow-lg shadow-[#58A6FF]/25'
+                    ? 'bg-gradient-to-r from-[#7C3AED] to-[#A855F7] text-white shadow-lg shadow-[#7C3AED]/30'
                     : tab.disabled
-                    ? 'text-[#6e7681] cursor-not-allowed opacity-50'
-                    : 'text-[#C9D1D9] hover:bg-[#21262d] hover:text-[#58A6FF]'
+                    ? 'text-[#64748b] cursor-not-allowed opacity-50'
+                    : 'text-[#e2e8f0] hover:bg-white/10 hover:text-[#A855F7]'
                 }`}
               >
                 <span>{tab.icon}</span>

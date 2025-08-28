@@ -37,16 +37,17 @@ export const ProfileInput: React.FC<ProfileInputProps> = ({ onSubmit, isLoading 
     return (
       <div className="flex flex-col items-center justify-center py-20 space-y-6">
         <div className="relative">
-          <Loader2 className="w-12 h-12 text-[#58A6FF] animate-spin" />
-          <div className="absolute inset-0 w-12 h-12 border-2 border-[#58A6FF]/20 rounded-full animate-pulse"></div>
+          <div className="w-16 h-16 bg-gradient-to-br from-[#7C3AED] to-[#A855F7] rounded-2xl flex items-center justify-center animate-pulse-glow">
+            <Loader2 className="w-8 h-8 text-white animate-spin" />
+          </div>
         </div>
         <div className="text-center">
-          <h3 className="text-xl font-semibold text-[#C9D1D9] mb-2">Analyzing Your Profile</h3>
-          <p className="text-[#8B949E] font-mono">AI is processing your LinkedIn data...</p>
+          <h3 className="text-2xl font-bold gradient-text mb-3">Analyzing Your Profile</h3>
+          <p className="text-[#94a3b8] text-lg">AI is processing your LinkedIn data...</p>
           <div className="mt-4 flex justify-center space-x-2">
-            <div className="w-2 h-2 bg-[#58A6FF] rounded-full animate-bounce" style={{ animationDelay: '0s' }}></div>
-            <div className="w-2 h-2 bg-[#58A6FF] rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-            <div className="w-2 h-2 bg-[#58A6FF] rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+            <div className="w-3 h-3 bg-gradient-to-r from-[#7C3AED] to-[#A855F7] rounded-full animate-bounce" style={{ animationDelay: '0s' }}></div>
+            <div className="w-3 h-3 bg-gradient-to-r from-[#A855F7] to-[#EC4899] rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+            <div className="w-3 h-3 bg-gradient-to-r from-[#EC4899] to-[#F97316] rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
           </div>
         </div>
       </div>
@@ -56,17 +57,17 @@ export const ProfileInput: React.FC<ProfileInputProps> = ({ onSubmit, isLoading 
   return (
     <div className="max-w-4xl mx-auto">
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-[#C9D1D9] mb-4">
+        <h2 className="text-4xl font-bold gradient-text mb-6">
           Upload Your LinkedIn Profile
         </h2>
-        <p className="text-[#8B949E] text-lg">
+        <p className="text-[#94a3b8] text-xl font-medium">
           Get AI-powered insights and recommendations to optimize your professional presence
         </p>
       </div>
 
       {/* Input Type Selector */}
       <div className="flex justify-center mb-8">
-        <div className="bg-[#161B22] rounded-lg p-1 border border-[#30363d]">
+        <div className="glass rounded-xl p-1">
           {[
             { id: 'url', label: 'LinkedIn URL', icon: Link },
             { id: 'pdf', label: 'PDF Upload', icon: Upload },
@@ -75,25 +76,25 @@ export const ProfileInput: React.FC<ProfileInputProps> = ({ onSubmit, isLoading 
             <button
               key={id}
               onClick={() => setInputType(id as any)}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-md transition-all duration-200 ${
+              className={`flex items-center space-x-3 px-6 py-3 rounded-lg font-medium transition-all duration-300 ${
                 inputType === id
-                  ? 'bg-[#58A6FF] text-[#0D1117] shadow-lg shadow-[#58A6FF]/25'
-                  : 'text-[#C9D1D9] hover:bg-[#21262d] hover:text-[#58A6FF]'
+                  ? 'bg-gradient-to-r from-[#7C3AED] to-[#A855F7] text-white shadow-lg shadow-[#7C3AED]/30'
+                  : 'text-[#e2e8f0] hover:bg-white/10 hover:text-[#A855F7]'
               }`}
             >
               <Icon className="w-4 h-4" />
-              <span className="font-medium">{label}</span>
+              <span>{label}</span>
             </button>
           ))}
         </div>
       </div>
 
       {/* Input Forms */}
-      <div className="bg-[#161B22] rounded-lg border border-[#30363d] p-8">
+      <div className="glass rounded-2xl p-8">
         {inputType === 'url' && (
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-[#C9D1D9] mb-2 font-mono">
+              <label className="block text-sm font-semibold text-[#e2e8f0] mb-3">
                 LinkedIn Profile URL
               </label>
               <div className="relative">
@@ -102,19 +103,18 @@ export const ProfileInput: React.FC<ProfileInputProps> = ({ onSubmit, isLoading 
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
                   placeholder="https://linkedin.com/in/your-profile"
-                  className="w-full px-4 py-3 bg-[#0D1117] border border-[#30363d] rounded-md text-[#C9D1D9] font-mono focus:outline-none focus:ring-2 focus:ring-[#58A6FF] focus:border-transparent transition-all duration-200"
+                  className="w-full px-6 py-4 bg-[#1a1a2e]/50 border border-white/20 rounded-xl text-[#e2e8f0] placeholder-[#94a3b8] focus:outline-none focus:ring-2 focus:ring-[#7C3AED] focus:border-[#7C3AED] transition-all duration-300 backdrop-blur-sm"
                   required
                 />
-                <div className="absolute inset-0 border border-[#58A6FF]/0 rounded-md transition-all duration-200 pointer-events-none group-focus-within:border-[#58A6FF]/50"></div>
               </div>
-              <p className="text-xs text-[#8B949E] mt-2 font-mono">
+              <p className="text-sm text-[#94a3b8] mt-3">
                 💡 Make sure your profile is set to public for best analysis
               </p>
             </div>
             <button
               type="submit"
               disabled={!url.trim()}
-              className="w-full bg-[#58A6FF] text-[#0D1117] py-3 px-6 rounded-md font-semibold hover:bg-[#4493e0] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg shadow-[#58A6FF]/25 hover:shadow-[#58A6FF]/40"
+              className="w-full btn-primary py-4 px-8 rounded-xl font-semibold text-lg disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Analyze Profile
             </button>
@@ -126,13 +126,13 @@ export const ProfileInput: React.FC<ProfileInputProps> = ({ onSubmit, isLoading 
             <div className="text-center">
               <div
                 onClick={() => fileInputRef.current?.click()}
-                className="border-2 border-dashed border-[#30363d] rounded-lg p-8 cursor-pointer hover:border-[#58A6FF] transition-colors duration-200 group"
+                className="border-2 border-dashed border-white/20 rounded-2xl p-12 cursor-pointer hover:border-[#7C3AED] transition-all duration-300 group glass-light"
               >
-                <Upload className="w-12 h-12 text-[#8B949E] mx-auto mb-4 group-hover:text-[#58A6FF] transition-colors duration-200" />
-                <p className="text-[#C9D1D9] font-medium mb-2">
+                <Upload className="w-16 h-16 text-[#94a3b8] mx-auto mb-6 group-hover:text-[#A855F7] transition-colors duration-300" />
+                <p className="text-[#e2e8f0] font-semibold text-lg mb-3">
                   Drop your LinkedIn PDF export here
                 </p>
-                <p className="text-[#8B949E] text-sm font-mono">
+                <p className="text-[#94a3b8]">
                   or click to browse files
                 </p>
               </div>
@@ -147,9 +147,9 @@ export const ProfileInput: React.FC<ProfileInputProps> = ({ onSubmit, isLoading 
                 className="hidden"
               />
             </div>
-            <div className="bg-[#0D1117] border border-[#30363d] rounded-md p-4">
-              <p className="text-xs text-[#8B949E] font-mono leading-relaxed">
-                <strong className="text-[#58A6FF]">How to export your LinkedIn data:</strong><br />
+            <div className="glass-light rounded-xl p-6">
+              <p className="text-sm text-[#94a3b8] leading-relaxed">
+                <strong className="text-[#A855F7]">How to export your LinkedIn data:</strong><br />
                 1. Go to Settings & Privacy → Data Privacy<br />
                 2. Download your data → Select "Profile" → Request Archive<br />
                 3. LinkedIn will email you a download link
@@ -162,68 +162,68 @@ export const ProfileInput: React.FC<ProfileInputProps> = ({ onSubmit, isLoading 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-[#C9D1D9] mb-2 font-mono">Name</label>
+                <label className="block text-sm font-semibold text-[#e2e8f0] mb-3">Name</label>
                 <input
                   type="text"
                   value={manualData.name}
                   onChange={(e) => setManualData({ ...manualData, name: e.target.value })}
                   placeholder="John Doe"
-                  className="w-full px-4 py-3 bg-[#0D1117] border border-[#30363d] rounded-md text-[#C9D1D9] font-mono focus:outline-none focus:ring-2 focus:ring-[#58A6FF] focus:border-transparent"
+                  className="w-full px-4 py-3 bg-[#1a1a2e]/50 border border-white/20 rounded-xl text-[#e2e8f0] placeholder-[#94a3b8] focus:outline-none focus:ring-2 focus:ring-[#7C3AED] focus:border-[#7C3AED] transition-all duration-300"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-[#C9D1D9] mb-2 font-mono">Headline</label>
+                <label className="block text-sm font-semibold text-[#e2e8f0] mb-3">Headline</label>
                 <input
                   type="text"
                   value={manualData.headline}
                   onChange={(e) => setManualData({ ...manualData, headline: e.target.value })}
                   placeholder="Senior Software Engineer at TechCorp"
-                  className="w-full px-4 py-3 bg-[#0D1117] border border-[#30363d] rounded-md text-[#C9D1D9] font-mono focus:outline-none focus:ring-2 focus:ring-[#58A6FF] focus:border-transparent"
+                  className="w-full px-4 py-3 bg-[#1a1a2e]/50 border border-white/20 rounded-xl text-[#e2e8f0] placeholder-[#94a3b8] focus:outline-none focus:ring-2 focus:ring-[#7C3AED] focus:border-[#7C3AED] transition-all duration-300"
                   required
                 />
               </div>
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-[#C9D1D9] mb-2 font-mono">About Section</label>
+              <label className="block text-sm font-semibold text-[#e2e8f0] mb-3">About Section</label>
               <textarea
                 value={manualData.about}
                 onChange={(e) => setManualData({ ...manualData, about: e.target.value })}
                 placeholder="Tell us about yourself, your expertise, and what drives you professionally..."
                 rows={4}
-                className="w-full px-4 py-3 bg-[#0D1117] border border-[#30363d] rounded-md text-[#C9D1D9] font-mono focus:outline-none focus:ring-2 focus:ring-[#58A6FF] focus:border-transparent resize-none"
+                className="w-full px-4 py-3 bg-[#1a1a2e]/50 border border-white/20 rounded-xl text-[#e2e8f0] placeholder-[#94a3b8] focus:outline-none focus:ring-2 focus:ring-[#7C3AED] focus:border-[#7C3AED] transition-all duration-300 resize-none"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-[#C9D1D9] mb-2 font-mono">Experience</label>
+              <label className="block text-sm font-semibold text-[#e2e8f0] mb-3">Experience</label>
               <textarea
                 value={manualData.experience}
                 onChange={(e) => setManualData({ ...manualData, experience: e.target.value })}
                 placeholder="List your recent work experience, roles, and key achievements..."
                 rows={4}
-                className="w-full px-4 py-3 bg-[#0D1117] border border-[#30363d] rounded-md text-[#C9D1D9] font-mono focus:outline-none focus:ring-2 focus:ring-[#58A6FF] focus:border-transparent resize-none"
+                className="w-full px-4 py-3 bg-[#1a1a2e]/50 border border-white/20 rounded-xl text-[#e2e8f0] placeholder-[#94a3b8] focus:outline-none focus:ring-2 focus:ring-[#7C3AED] focus:border-[#7C3AED] transition-all duration-300 resize-none"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-[#C9D1D9] mb-2 font-mono">Skills</label>
+              <label className="block text-sm font-semibold text-[#e2e8f0] mb-3">Skills</label>
               <input
                 type="text"
                 value={manualData.skills}
                 onChange={(e) => setManualData({ ...manualData, skills: e.target.value })}
                 placeholder="JavaScript, React, Node.js, Python, AWS, etc."
-                className="w-full px-4 py-3 bg-[#0D1117] border border-[#30363d] rounded-md text-[#C9D1D9] font-mono focus:outline-none focus:ring-2 focus:ring-[#58A6FF] focus:border-transparent"
+                className="w-full px-4 py-3 bg-[#1a1a2e]/50 border border-white/20 rounded-xl text-[#e2e8f0] placeholder-[#94a3b8] focus:outline-none focus:ring-2 focus:ring-[#7C3AED] focus:border-[#7C3AED] transition-all duration-300"
                 required
               />
             </div>
 
             <button
               type="submit"
-              className="w-full bg-[#58A6FF] text-[#0D1117] py-3 px-6 rounded-md font-semibold hover:bg-[#4493e0] transition-all duration-200 shadow-lg shadow-[#58A6FF]/25 hover:shadow-[#58A6FF]/40"
+              className="w-full btn-primary py-4 px-8 rounded-xl font-semibold text-lg"
             >
               Analyze Profile
             </button>
