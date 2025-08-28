@@ -1,169 +1,226 @@
-import React from 'react';
-import { User, FileText, Briefcase, Award, Activity, BookOpen } from 'lucide-react';
-import type { AnalysisResult } from '../types';
+import React, { useState, useEffect } from 'react';
+import { Bot, Copy, CheckCircle } from 'lucide-react';
+import type { AnalysisResult, ProfileData } from '../types';
 
-interface ScoringDashboardProps {
+interface SuggestionsPanelProps {
   analysis: AnalysisResult;
+  profileData: ProfileData | null;
 }
 
-const categoryIcons = {
-  profile_picture: User,
-  about_section: FileText,
-  experience: Briefcase,
-  skills: Award,
-  activity: Activity,
-  certifications: BookOpen
-};
+interface ChatMessage {
+  type: 'ai' | 'suggestion';
+  content: string;
+  category?: string;
+  timestamp: Date;
+}
 
-const categoryLabels = {
-  profile_picture: 'Profile Picture',
-  about_section: 'About Section',
-  experience: 'Experience',
-  skills: 'Skills & Endorsements',
-  activity: 'Posts & Activity',
-  certifications: 'Certifications'
-};
+export const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({ analysis, profileData }) => {
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
 
-const getScoreColor = (score: number) => {
-  if (score >= 80) return '#10b981'; // emerald
-  if (score >= 60) return '#f59e0b'; // amber
-  return '#ef4444'; // red
-};
+  useEffect(() => {
+    const initialMessages: ChatMessage[] = [
+      {
+        type: 'ai',
+        content: "Hi! I've analyzed your LinkedIn profile and found several areas where we can boost your professional impact. Let me share some personalized recommendations:",
+        timestamp: new Date()
+      }
+    ];
 
-const ScoreCard: React.FC<{
-  category: keyof typeof categoryIcons;
-  data: { score: number; feedback: string; suggestions: string[] };
-}> = ({ category, data }) => {
-  const Icon = categoryIcons[category];
-  const color = getScoreColor(data.score);
+    // Add category-specific suggestions
+    Object.entries(analysis.categories).forEach(([category, data]) => {
+      if (data.score < 80) {
+        data.suggestions.forEach(suggestion => {
+          initialMessages.push({
+            type: 'suggestion',
+            content: suggestion,
+            category: category.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()),
+            timestamp: new Date()
+          });
+        });
+      }
+    });
+
+    // Add improvement suggestions
+    analysis.improvements.forEach(improvement => {
+      initialMessages.push({
+        type: 'suggestion',
+        content: improvement,
+        category: 'General',
+        timestamp: new Date()
+      });
+    });
+
+    // Simulate typing effect
+    let index = 0;
+    const interval = setInterval(() => {
+      if (index < initialMessages.length) {
+        setMessages(prev => [...prev, initialMessages[index]]);
+        index++;
+      } else {
+        clearInterval(interval);
+      }
+    }, 800);
+
+    return () => clearInterval(interval);
+  }, [analysis]);
+
+  const handleCopy = async (text: string, index: number) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedIndex(index);
+      setTimeout(() => setCopiedIndex(null), 2000);
+    } catch (err) {
+      console.error('Failed to copy text');
+    }
+  };
+
+  const generateImprovedContent = (category: string): string => {
+    switch (category.toLowerCase()) {
+      case 'about section':
+        return `Passionate software engineer with 5+ years of experience building scalable web applications. I specialize in React, Node.js, and cloud architecture, having led teams that delivered products used by 100K+ users. I'm driven by solving complex problems and mentoring the next generation of developers.
+
+Key achievements:
+• Led development of customer-facing platform serving 100K+ daily active users
+• Reduced application load time by 40% through performance optimization
+• Mentored 8 junior developers, with 90% promotion rate within 18 months
+
+I'm always excited to discuss innovative tech solutions and team leadership strategies. Let's connect!`;
+
+      case 'headline':
+        return 'Senior Full-Stack Engineer | React & Node.js Expert | Team Lead | Building Products that Scale';
+
+      default:
+        return 'Improved content generated based on AI analysis...';
+    }
+  };
 
   return (
-    <div className="glass rounded-2xl p-6 hover:border-[#7C3AED]/50 transition-all duration-300 group hover:shadow-lg hover:shadow-[#7C3AED]/20">
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex items-center space-x-3">
-          <div className="p-3 bg-gradient-to-br from-[#7C3AED]/20 to-[#A855F7]/20 rounded-xl border border-white/10 group-hover:border-[#7C3AED]/50 transition-all duration-300">
-            <Icon className="w-5 h-5 text-[#A855F7]" />
+    <div className="max-w-4xl mx-auto">
+      <div className="text-center mb-8">
+        <h2 className="text-4xl font-bold gradient-text mb-6">
+          AI Suggestions
+        </h2>
+        <p className="text-[#94a3b8] text-xl font-medium">
+          Personalized recommendations to optimize your LinkedIn profile
+        </p>
+      </div>
+
+      <div className="glass rounded-2xl h-96 overflow-hidden flex flex-col">
+        {/* Chat Header */}
+        <div className="bg-gradient-to-r from-[#7C3AED]/20 to-[#A855F7]/20 border-b border-white/10 p-6 flex items-center space-x-4">
+          <div className="relative">
+            <div className="w-10 h-10 bg-gradient-to-br from-[#7C3AED] to-[#A855F7] rounded-xl flex items-center justify-center">
+              <Bot className="w-5 h-5 text-white" />
+            </div>
+            <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-[#0f0f23] animate-pulse"></div>
           </div>
           <div>
-            <h3 className="font-semibold text-[#e2e8f0] text-lg">{categoryLabels[category]}</h3>
-            <p className="text-sm text-[#94a3b8]">AI Analysis</p>
+            <p className="font-bold text-[#e2e8f0] text-lg">LinkedIn Copilot</p>
+            <p className="text-sm text-[#94a3b8]">Online • Ready to help optimize your profile</p>
           </div>
         </div>
-        <div className="text-right">
-          <div className="text-3xl font-bold" style={{ color }}>
-            {data.score}
-          </div>
-          <div className="text-sm text-[#94a3b8]">/100</div>
-        </div>
-      </div>
 
-      {/* Progress Bar */}
-      <div className="mb-4">
-        <div className="h-3 bg-[#1a1a2e] rounded-full overflow-hidden">
-          <div
-            className="h-full rounded-full transition-all duration-1500 ease-out"
-            style={{ 
-              width: `${data.score}%`, 
-              background: `linear-gradient(90deg, ${color}, ${color}dd)`,
-              boxShadow: `0 0 10px ${color}50`
-            }}
-          />
-        </div>
-      </div>
-
-      <p className="text-[#e2e8f0] mb-4 leading-relaxed">{data.feedback}</p>
-
-      <div className="space-y-2">
-        <p className="text-sm font-semibold text-[#94a3b8] uppercase tracking-wide">
-          Suggestions
-        </p>
-        {data.suggestions.slice(0, 2).map((suggestion, index) => (
-          <div key={index} className="flex items-start space-x-2">
-            <div className="w-2 h-2 bg-gradient-to-r from-[#7C3AED] to-[#A855F7] rounded-full mt-2 flex-shrink-0" />
-            <p className="text-sm text-[#94a3b8] leading-relaxed">{suggestion}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
-
-export const ScoringDashboard: React.FC<ScoringDashboardProps> = ({ analysis }) => {
-  const overallColor = getScoreColor(analysis.overall_score);
-
-  return (
-    <div className="space-y-8">
-      {/* Overall Score */}
-      <div className="text-center">
-        <div className="inline-block glass rounded-3xl p-12 mb-8 animate-pulse-glow">
-          <div className="mb-4">
-            <div 
-              className="text-7xl font-bold mb-4"
-              style={{ color: overallColor }}
+        {/* Messages */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          {messages.map((message, index) => (
+            <div
+              key={index}
+              className={`flex space-x-3 animate-fade-in`}
+              style={{ animationDelay: `${index * 0.1}s` }}
             >
-              {analysis.overall_score}
-            </div>
-            <div className="text-[#94a3b8] text-xl font-medium">Overall Profile Score</div>
-          </div>
-          
-          {/* Circular Progress */}
-          <div className="relative w-40 h-40 mx-auto">
-            <svg className="w-40 h-40 transform -rotate-90" viewBox="0 0 100 100">
-              <circle
-                cx="50"
-                cy="50"
-                r="45"
-                stroke="#1a1a2e"
-                strokeWidth="8"
-                fill="transparent"
-              />
-              <circle
-                cx="50"
-                cy="50"
-                r="45"
-                stroke={overallColor}
-                strokeWidth="8"
-                fill="transparent"
-                strokeDasharray={`${2 * Math.PI * 45}`}
-                strokeDashoffset={`${2 * Math.PI * 45 * (1 - analysis.overall_score / 100)}`}
-                className="transition-all duration-2000 ease-out"
-                style={{ filter: `drop-shadow(0 0 5px ${overallColor}50)` }}
-              />
-            </svg>
-          </div>
-        </div>
-      </div>
-
-      {/* Category Scores */}
-      <div>
-        <h2 className="text-3xl font-bold gradient-text mb-8">
-          Detailed Analysis
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          {Object.entries(analysis.categories).map(([category, data]) => (
-            <ScoreCard
-              key={category}
-              category={category as keyof typeof categoryIcons}
-              data={data}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* Key Improvements */}
-      <div className="glass rounded-2xl p-8">
-        <h3 className="text-2xl font-bold gradient-text mb-6">
-          🎯 Priority Improvements
-        </h3>
-        <div className="space-y-3">
-          {analysis.improvements.map((improvement, index) => (
-            <div key={index} className="flex items-start space-x-4 p-4 glass-light rounded-xl">
-              <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-r from-[#7C3AED] to-[#A855F7] rounded-full flex items-center justify-center text-white font-bold">
-                {index + 1}
+              <div className="flex-shrink-0">
+                <div className="w-10 h-10 bg-gradient-to-br from-[#7C3AED] to-[#A855F7] rounded-xl flex items-center justify-center shadow-lg shadow-[#7C3AED]/30">
+                  <Bot className="w-5 h-5 text-white" />
+                </div>
               </div>
-              <p className="text-[#e2e8f0] leading-relaxed">{improvement}</p>
+              <div className="flex-1 max-w-lg">
+                <div className="glass-light rounded-xl p-4">
+                  {message.category && (
+                    <div className="text-sm text-[#A855F7] font-semibold mb-2 uppercase tracking-wide">
+                      {message.category}
+                    </div>
+                  )}
+                  <p className="text-[#e2e8f0] leading-relaxed whitespace-pre-line">
+                    {message.content}
+                  </p>
+                  {message.type === 'suggestion' && (
+                    <button
+                      onClick={() => handleCopy(message.content, index)}
+                      className="mt-3 flex items-center space-x-2 text-sm text-[#94a3b8] hover:text-[#A855F7] transition-colors duration-200"
+                    >
+                      {copiedIndex === index ? (
+                        <>
+                          <CheckCircle className="w-3 h-3" />
+                          <span>Copied!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-3 h-3" />
+                          <span>Copy</span>
+                        </>
+                      )}
+                    </button>
+                  )}
+                </div>
+              </div>
             </div>
           ))}
+        </div>
+
+        {/* Input Area (Placeholder) */}
+        <div className="border-t border-white/10 p-6">
+          <div className="flex space-x-3">
+            <input
+              type="text"
+              placeholder="Ask for specific improvements..."
+              disabled
+              className="flex-1 px-4 py-3 bg-[#1a1a2e]/50 border border-white/20 rounded-xl text-[#94a3b8] cursor-not-allowed"
+            />
+            <button
+              disabled
+              className="px-6 py-3 bg-gradient-to-r from-[#7C3AED]/50 to-[#A855F7]/50 text-[#94a3b8] rounded-xl font-medium cursor-not-allowed"
+            >
+              Send
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Quick Actions */}
+      <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="glass rounded-2xl p-6">
+          <h3 className="text-xl font-bold gradient-text mb-6">
+            ✍️ Improved About Section
+          </h3>
+          <div className="glass-light rounded-xl p-6 mb-6">
+            <pre className="text-sm text-[#e2e8f0] leading-relaxed whitespace-pre-wrap font-sans">
+              {generateImprovedContent('about section')}
+            </pre>
+          </div>
+          <button
+            onClick={() => handleCopy(generateImprovedContent('about section'), -1)}
+            className="w-full btn-primary py-3 px-6 rounded-xl font-semibold"
+          >
+            Copy Improved Version
+          </button>
+        </div>
+
+        <div className="bg-[#161B22] border border-[#30363d] rounded-lg p-6">
+          <h3 className="text-lg font-semibold text-[#C9D1D9] mb-4 font-mono">
+            🎯 Optimized Headline
+          </h3>
+          <div className="bg-[#0D1117] border border-[#30363d] rounded-md p-4 mb-4">
+            <p className="text-sm text-[#C9D1D9] leading-relaxed">
+              {generateImprovedContent('headline')}
+            </p>
+          </div>
+          <button
+            onClick={() => handleCopy(generateImprovedContent('headline'), -2)}
+            className="w-full bg-[#58A6FF] text-[#0D1117] py-2 px-4 rounded-md font-semibold hover:bg-[#4493e0] transition-colors duration-200"
+          >
+            Copy Optimized Headline
+          </button>
         </div>
       </div>
     </div>
