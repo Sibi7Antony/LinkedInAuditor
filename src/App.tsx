@@ -269,3 +269,5 @@ I'm always excited to discuss innovative tech solutions and team leadership stra
     </div>
   );
 };
+
+export default App;
