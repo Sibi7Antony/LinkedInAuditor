@@ -14,7 +14,44 @@ interface ChatMessage {
   timestamp: Date;
 }
 
-export const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({ analysis, profileData }) => {
+const App: React.FC = () => {
+  const [profileData, setProfileData] = useState<ProfileData | null>(null);
+  const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  const handleAnalysisComplete = (data: ProfileData, analysisResult: AnalysisResult) => {
+    setProfileData(data);
+    setAnalysis(analysisResult);
+  };
+
+  if (!analysis || !profileData) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+        <Background />
+        <Header />
+        <main className="relative z-10 container mx-auto px-6 py-12">
+          <ProfileInput onAnalysisComplete={handleAnalysisComplete} />
+          <AIAssistant />
+        </main>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      <Background />
+      <Header />
+      <main className="relative z-10 container mx-auto px-6 py-12">
+        <ScoringDashboard analysis={analysis} profileData={profileData} />
+        <SuggestionsPanel analysis={analysis} profileData={profileData} />
+        <ExportPanel analysis={analysis} profileData={profileData} />
+        <AIAssistant />
+      </main>
+    </div>
+  );
+};
+
+const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({ analysis, profileData }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
 
