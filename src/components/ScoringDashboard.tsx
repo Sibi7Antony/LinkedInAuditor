@@ -14,7 +14,7 @@ interface ChatMessage {
   timestamp: Date;
 }
 
-export const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({ analysis, profileData }) => {
+export const ScoringDashboard: React.FC<SuggestionsPanelProps> = ({ analysis, profileData }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
 
