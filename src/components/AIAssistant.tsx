@@ -15,6 +15,8 @@ interface ChatMessage {
 }
 
 export const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({ analysis, profileData }) => {
+  return null;
+};
 
 export const AIAssistant: React.FC<SuggestionsPanelProps> = ({ analysis, profileData }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
