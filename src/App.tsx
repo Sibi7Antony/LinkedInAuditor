@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Bot, Copy, CheckCircle } from 'lucide-react';
+import { Header } from './components/Header';
+import { Background } from './components/Background';
+import { ProfileInput } from './components/ProfileInput';
+import { ScoringDashboard } from './components/ScoringDashboard';
+import { ExportPanel } from './components/ExportPanel';
+import { AIAssistant } from './components/AIAssistant';
 import type { AnalysisResult, ProfileData } from '../types';
 
 interface SuggestionsPanelProps {
