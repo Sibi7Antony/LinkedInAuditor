@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Bot, Copy, CheckCircle } from 'lucide-react';
 import type { AnalysisResult, ProfileData } from '../types';
 
-interface SuggestionsPanelProps {
+interface ProfileInputProps {
   analysis: AnalysisResult;
   profileData: ProfileData | null;
 }
@@ -14,7 +14,7 @@ interface ChatMessage {
   timestamp: Date;
 }
 
-export const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({ analysis, profileData }) => {
+export const ProfileInput: React.FC<ProfileInputProps> = ({ analysis, profileData }) => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
 
